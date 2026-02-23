@@ -17,19 +17,27 @@ async function sendMessage() {
       body: JSON.stringify({ message: userText })
     });
 
-    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+    // Parse JSON
     const data = await response.json();
 
     typing.remove();
-    addMessage(data.reply, "bot");
+
+    if (!response.ok) {
+      // Show friendly server error messages
+      addMessage(data.reply || `Server error: ${response.status}`, "bot");
+    } else {
+      addMessage(data.reply, "bot");
+    }
 
   } catch (error) {
     typing.remove();
-    addMessage(`Error: ${error.message}`, "bot");
-    console.error("Chatbot error:", error);
+    // Show network / unexpected errors
+    addMessage(`❌ Error: ${error.message}`, "bot");
+    console.error("Chatbot fetch error:", error);
   }
 }
 
+// Function to add a message to the chat box
 function addMessage(text, sender) {
   const chatBox = document.getElementById("chat-box");
   const msg = document.createElement("div");
