@@ -1,11 +1,13 @@
 async function sendMessage() {
   const input = document.getElementById("user-input");
-  const chatBox = document.getElementById("chat-box");
   const userText = input.value.trim();
   if (!userText) return;
 
+  // Add user message to chat
   addMessage(userText, "user");
   input.value = "";
+
+  // Show "Typing..." while waiting for AI response
   const typing = addMessage("Typing...", "bot");
 
   try {
@@ -17,6 +19,7 @@ async function sendMessage() {
 
     if (!response.ok) throw new Error(`Server error: ${response.status}`);
     const data = await response.json();
+
     typing.remove();
     addMessage(data.reply, "bot");
 
